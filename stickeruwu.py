@@ -1,20 +1,23 @@
 import discord
 from discord.ext import commands
 import re
+import os
+from keep_alive import keep_alive
 
-TOKEN = 'MTM3MDM0OTkyMzU1OTgwNDkyOA.Gkb9NJ.3LUVj-FTLtWcvEnyWa2b-Xu-x2Fq3RC11XWK18'  # 再生成済の安全なトークンをここに
+# ロールID設定
 STICKER_BANNED_ROLE_ID = 1370347710468591678
 EMOJI_BANNED_ROLE_ID = 1370343214048874538
 
+# Intent設定
 intents = discord.Intents.default()
-intents.messages = True
 intents.guilds = True
-intents.message_content = True
 intents.members = True
+intents.message_content = True
 
+# Bot起動
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-# 絵文字判定（カスタム & Unicode 両方）
+# 絵文字正規表現（カスタム&Unicode）
 EMOJI_REGEX = re.compile(
     r'(<a?:[a-zA-Z0-9_]+:\d{18,}>|[\U0001F300-\U0001F6FF\U0001F900-\U0001F9FF\U0001F1E6-\U0001F1FF\U00002700-\U000027BF])'
 )
@@ -58,4 +61,8 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
-bot.run(TOKEN)
+# Replit keep-alive
+keep_alive()
+
+# .env から TOKEN を読み込んで起動
+bot.run(os.getenv("TOKEN"))
